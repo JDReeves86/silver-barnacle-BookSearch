@@ -1,50 +1,48 @@
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
+const { AuthenticationError } = require('apollo-server-express')
 
 const resolvers = {
   Query: {
-    getSingleUser: async (parent, args) => {
-      const foundUser = await User.findOne({
-        $or: [
-          { _id: args._id },
-          { username: args.username },
-        ],
-      });
-      return foundUser;
-    },
+    getMe: async (parent, args, context) => {
+      if (context.user) {
+        return User.findOne({ _id: context.user._id})
+      }
+      throw new AuthenticationError('You need to be logged in to do that.')
+    }
   },
   Mutation: {
     login: async (parent, args) => {
-      console.log(args)
       const user = await User.findOne({
         $or: [{ username: args.username }, { email: args.email }],
       });
-    //   if (!user) {
-    //     return res.status(400).json({ message: "Can't find this user" });
-    //   }
+      if (!user) {
+        throw new AuthenticationError('No user with that email found!')
+      }
 
       const correctPw = await user.isCorrectPassword(args.password);
 
-    //   if (!correctPw) {
-    //     return res.status(400).json({ message: "Wrong password!" });
-    //   }
-      // const token = signToken(user);
-      return user
-    //   res.json({ token, user });
+      if (!correctPw) {
+        throw new AuthenticationError('Wrong password, boo!')
+      }
+      const token = signToken(user);
+    
+      // return user 
+      return { user, token }
     },
     saveBook: async (parent, args) => {
       console.log(args);
-      try {
-        const updatedUser = await User.findOneAndUpdate(
-          { _id: user._id },
-          { $addToSet: { savedBooks: body } },
-          { new: true, runValidators: true }
-        );
-        return res.json(updatedUser);
-      } catch (err) {
-        console.log(err);
-        return res.status(400).json(err);
-      }
+      // try {
+      //   const updatedUser = await User.findOneAndUpdate(
+      //     { _id: user._id },
+      //     { $addToSet: { savedBooks: body } },
+      //     { new: true, runValidators: true }
+      //   );
+      //   return res.json(updatedUser);
+      // } catch (err) {
+      //   console.log(err);
+      //   return res.status(400).json(err);
+      // }
     },
     async createNewUser(parent, args) {
       console.log(args)
