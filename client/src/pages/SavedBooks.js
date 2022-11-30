@@ -68,6 +68,7 @@ const SavedBooks = () => {
         </h2>
         <CardColumns>
           {userData.savedBooks.map((book) => {
+            console.log(book)
             return (
               <Card key={book.bookId} border="dark">
                 {book.image ? (
