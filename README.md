@@ -140,7 +140,7 @@ Saved books
 
 Link to Github repo: https://github.com/JDReeves86/silver-barnacle-BookSearch
 
-Link to Heroku app: https://polar-wave-88099.herokuapp.com/
+Link to Heroku app: https://thawing-ridge-19931.herokuapp.com/
 <br>
 <br>
 <br>
