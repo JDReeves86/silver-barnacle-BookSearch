@@ -53,3 +53,20 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const DELETE_BOOK = gql`
+mutation DeleteBook($bookData: String!) {
+    deleteBook(bookData: $bookData) {
+        _id
+        username
+        email
+        savedBooks {
+          authors
+          bookId
+          description
+          title
+          image
+        }
+    }
+  }
+`
